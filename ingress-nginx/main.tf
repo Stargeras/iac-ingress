@@ -22,7 +22,7 @@ resource "helm_release" "ingress" {
 
   set {
     name = "controller.kind"
-    value = "daemonset"
+    value = "deployment"
   }
 }
 
