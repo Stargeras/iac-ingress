@@ -24,3 +24,18 @@ variable "webapp_hostname" {
     type = string
     default = "webapp.svc.cluster.local"
 }
+
+variable "webapp_image" {
+    type = string
+    default = "nginx"
+}
+
+variable "webapp_port" {
+    type = number
+    default = 80
+}
+
+variable "webapp_replicas" {
+    type = number
+    default = 3
+}

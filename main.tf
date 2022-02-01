@@ -20,4 +20,7 @@ module "webapp" {
     source = "./webapp"
     kubeconfig = "${var.kubeconfig}"
     webapp_hostname = "${var.webapp_hostname}"
+    webapp_image = "${var.webapp_image}"
+    webapp_port = "${var.webapp_port}"
+    webapp_replicas = "${var.webapp_replicas}"
 }

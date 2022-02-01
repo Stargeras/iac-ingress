@@ -6,7 +6,7 @@ resource "kubernetes_deployment" "webapp" {
     }
   }
   spec {
-    replicas = 3
+    replicas = "${var.webapp_replicas}"
     selector {
       match_labels = {
         app = "webapp"
@@ -20,7 +20,7 @@ resource "kubernetes_deployment" "webapp" {
       }
       spec {
         container {
-          image = "nginx"
+          image = "${var.webapp_image}"
           name  = "webapp"
         }
       }
@@ -37,8 +37,8 @@ resource "kubernetes_service" "webapp" {
       app = "webapp"
     }
     port {
-      port        = 80
-      target_port = 80
+      port        = "${var.webapp_port}"
+      target_port = "${var.webapp_port}"
     }
     type = "ClusterIP"
   }
@@ -58,7 +58,7 @@ resource "kubernetes_ingress_v1" "webapp" {
             service {
               name = "webapp"
               port {
-                number = 80
+                number = "${var.webapp_port}"
               }
             }
           }
