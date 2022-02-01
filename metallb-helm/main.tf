@@ -1,0 +1,31 @@
+resource "kubernetes_namespace" "metallb" {
+  metadata {
+    name = "metallb"
+  }
+}
+
+resource "kubernetes_config_map" "metallb" {
+  metadata {
+    name = "config"
+    namespace = "metallb"
+  }
+
+  data = {
+    config = "${file("${path.module}/config.yaml")}"
+  }
+  depends_on = [kubernetes_namespace.metallb]
+}
+
+resource "helm_release" "metallb" {
+  name       = "metallb"
+  namespace  = "metallb"
+  create_namespace = "true"
+  repository = "https://charts.bitnami.com/bitnami"
+  chart      = "metallb"
+
+  set {
+      name = "existingConfigMap"
+      value = "config"
+  }
+  depends_on = [kubernetes_config_map.metallb]
+}
