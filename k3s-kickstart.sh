@@ -29,7 +29,8 @@ if ${installk3s}; then
 fi
 
 if ${installterraform}; then
-  url="https://releases.hashicorp.com/terraform/1.1.0/terraform_1.1.0_linux_amd64.zip"
+  terraformversion="1.1.4"
+  url="https://releases.hashicorp.com/terraform/${terraformversion}/terraform_${terraformversion}_linux_amd64.zip"
   file=$(echo ${url} | awk -F / '{print $NF}')
   wget ${url}
   echo ${file} | grep .zip >/dev/null 2>&1
