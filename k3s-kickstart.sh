@@ -15,6 +15,7 @@ if ${installk3s}; then
   # INSTALL K3S
   curl -sfL https://get.k3s.io > k3s.sh
   bash k3s.sh ${k3sannotations}
+  rm -f k3s.sh
 
   # KUBECONFIG
   mkdir ${HOME}/.kube
