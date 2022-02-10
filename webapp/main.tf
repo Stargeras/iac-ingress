@@ -45,6 +45,7 @@ resource "kubernetes_service" "webapp" {
 }
 
 resource "kubernetes_ingress_v1" "webapp" {
+  count = var.use_nginx ? 1 : 0
   metadata {
     name = "webapp"
   }

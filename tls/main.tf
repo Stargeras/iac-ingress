@@ -49,19 +49,20 @@ resource "kubernetes_secret" "tls-secret" {
   depends_on = [tls_self_signed_cert.certificate]
 }
 
-#resource "kubernetes_manifest" "tls_store" {
-#  manifest = {
-#    "apiVersion" = "traefik.containo.us/v1alpha1"
-#    "kind" = "TLSStore"
-#    "metadata" = {
-#      "name" = "default"
-#      "namespace" = "kube-public"
-#    }
-#    "spec" = {
-#      "defaultCertificate" = {
-#        "secretName" = "ingress-tls"
-#      }
-#    }
-#  }
-#  depends_on = [kubernetes_secret.tls-secret]
-#}
+resource "kubernetes_manifest" "tls_store" {
+  count = var.use_traefik ? 1 : 0
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "TLSStore"
+    "metadata" = {
+      "name" = "default"
+      "namespace" = "kube-public"
+    }
+    "spec" = {
+      "defaultCertificate" = {
+        "secretName" = "ingress-tls"
+      }
+    }
+  }
+  depends_on = [kubernetes_secret.tls-secret]
+}
