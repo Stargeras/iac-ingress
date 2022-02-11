@@ -40,6 +40,7 @@ resource "kubernetes_deployment" "webapp" {
       }
     }
   }
+  depends_on = [kubernetes_namespace.webapp]
 }
 
 resource "kubernetes_service" "webapp" {
@@ -57,6 +58,7 @@ resource "kubernetes_service" "webapp" {
     }
     type = "ClusterIP"
   }
+  depends_on = [kubernetes_namespace.webapp]
 }
 
 resource "kubernetes_ingress_v1" "webapp" {
@@ -89,6 +91,7 @@ resource "kubernetes_ingress_v1" "webapp" {
       ]
     }
   }
+  depends_on = [kubernetes_namespace.webapp]
 }
 
 resource "kubernetes_manifest" "webapp" {
@@ -119,4 +122,5 @@ resource "kubernetes_manifest" "webapp" {
       }
     }
   }
+  depends_on = [kubernetes_namespace.webapp]
 }
