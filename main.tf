@@ -1,3 +1,14 @@
+module "metallb-helm" {
+    source = "./metallb-helm"
+    kubeconfig = "${var.kubeconfig}"
+}
+
+module "traefik-helm" {
+    source = "./traefik-helm"
+    kubeconfig = "${var.kubeconfig}"
+    use_traefik = "${var.use_traefik}"
+}
+
 module "tls" {
     source = "./tls"
     tls_cname = "${var.tls_cname}"
@@ -6,14 +17,10 @@ module "tls" {
     kubeconfig = "${var.kubeconfig}"
 }
 
-module "metallb-helm" {
-    source = "./metallb-helm"
-    kubeconfig = "${var.kubeconfig}"
-}
-
 module "ingress-nginx" {
     source = "./ingress-nginx"
     kubeconfig = "${var.kubeconfig}"
+    use_nginx = "${var.use_nginx}"
 }
 
 module "webapp" {
@@ -23,4 +30,6 @@ module "webapp" {
     webapp_image = "${var.webapp_image}"
     webapp_port = "${var.webapp_port}"
     webapp_replicas = "${var.webapp_replicas}"
+    use_nginx = "${var.use_nginx}"
+    use_traefik = "${var.use_traefik}"
 }

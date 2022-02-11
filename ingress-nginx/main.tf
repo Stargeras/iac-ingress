@@ -1,4 +1,5 @@
 resource "helm_release" "ingress" {
+  count      = var.use_nginx ? 1 : 0
   name       = "ingress"
   namespace  = "ingress"
   create_namespace = "true"

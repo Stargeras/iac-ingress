@@ -39,3 +39,13 @@ variable "webapp_replicas" {
     type = number
     default = 3
 }
+
+variable "use_nginx" {
+    type = bool
+    default = true
+}
+
+variable "use_traefik" {
+    type = bool
+    default = false
+}
