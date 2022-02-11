@@ -1,6 +1,7 @@
 module "metallb-helm" {
     source = "./metallb-helm"
     kubeconfig = "${var.kubeconfig}"
+    metallb_ip = "${var.metallb_ip}"
 }
 
 module "traefik-helm" {
