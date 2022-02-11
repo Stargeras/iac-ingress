@@ -1,3 +1,9 @@
+provider "helm" {
+  kubernetes {
+      config_path = "${var.kubeconfig}"
+  }
+}
+
 resource "helm_release" "ingress" {
   count      = var.use_nginx ? 1 : 0
   name       = "ingress"

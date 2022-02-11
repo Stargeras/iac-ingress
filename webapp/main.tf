@@ -1,3 +1,9 @@
+provider "kubernetes" {
+  config_paths = [
+    "${var.kubeconfig}"
+  ]
+}
+
 resource "kubernetes_deployment" "webapp" {
   metadata {
     name = "webapp"

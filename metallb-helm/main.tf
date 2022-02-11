@@ -1,3 +1,15 @@
+provider "helm" {
+  kubernetes {
+      config_path = "${var.kubeconfig}"
+  }
+}
+
+provider "kubernetes" {
+  config_paths = [
+    "${var.kubeconfig}"
+  ]
+}
+
 resource "kubernetes_namespace" "metallb" {
   metadata {
     name = "metallb"
