@@ -21,9 +21,14 @@ resource "kubernetes_config_map" "metallb" {
     name = "config"
     namespace = "metallb"
   }
-
   data = {
-    config = "${file("${path.module}/config.yaml")}"
+    config = <<-EOT
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - 23.82.1.170-23.82.1.175
+    EOT
   }
   depends_on = [kubernetes_namespace.metallb]
 }
