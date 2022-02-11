@@ -42,7 +42,7 @@ resource "helm_release" "metallb" {
 
   set {
       name = "existingConfigMap"
-      value = "config"
+      value = "${kubernetes_config_map.metallb.metadata[0].name}"
   }
   depends_on = [kubernetes_config_map.metallb]
 }
