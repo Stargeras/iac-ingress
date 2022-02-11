@@ -4,6 +4,13 @@ provider "kubernetes" {
   ]
 }
 
+resource "kubernetes_namespace" "webapp" {
+  count = var.webapp_namespace != "default" ? 1 : 0
+  metadata {
+    name = "${var.webapp_namespace}"
+  }
+}
+
 resource "kubernetes_deployment" "webapp" {
   metadata {
     name = "webapp"
