@@ -27,7 +27,7 @@ resource "kubernetes_config_map" "metallb" {
     - name: default
       protocol: layer2
       addresses:
-      - 23.82.1.170-23.82.1.175
+      - ${var.metallb_ip}
     EOT
   }
   depends_on = [kubernetes_namespace.metallb]

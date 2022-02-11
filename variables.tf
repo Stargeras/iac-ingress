@@ -1,3 +1,8 @@
+variable "metallb_ip" {
+    type = string
+    default = "23.82.1.170-23.82.1.175"
+}
+
 variable "tls_cname" {
     type = string
     default = "svc.cluster.local"
