@@ -74,3 +74,33 @@ resource "kubernetes_ingress_v1" "webapp" {
     }
   }
 }
+
+resource "kubernetes_manifest" "webapp" {
+  count = var.use_traefik ? 1 : 0
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "IngressRoute"
+    "metadata" = {
+      "name" = "webapp"
+      "namespace" = "default"
+    }
+    "spec" = {
+      "entryPoints" = [
+        "websecure",
+      ]
+      "routes" = [{
+        "match" = "Host(`${var.webapp_hostname}`) && PathPrefix(`/`)"
+        "kind" = "Rule"
+        "services" = [{
+          "name" = "webapp"
+          "port" = "${var.webapp_port}"
+        }]
+      }]
+      "tls" = {
+        "store" = {
+          "name" = "default"
+        }
+      }
+    }
+  }
+}
