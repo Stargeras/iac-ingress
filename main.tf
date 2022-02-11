@@ -31,6 +31,7 @@ module "webapp" {
     webapp_image = "${var.webapp_image}"
     webapp_port = "${var.webapp_port}"
     webapp_replicas = "${var.webapp_replicas}"
+    webapp_namespace = "${var.webapp_namespace}"
     use_nginx = "${var.use_nginx}"
     use_traefik = "${var.use_traefik}"
 }

@@ -3,6 +3,16 @@ variable "metallb_ip" {
     default = "23.82.1.170-23.82.1.175"
 }
 
+variable "use_nginx" {
+    type = bool
+    default = true
+}
+
+variable "use_traefik" {
+    type = bool
+    default = false
+}
+
 variable "tls_cname" {
     type = string
     default = "svc.cluster.local"
@@ -45,12 +55,7 @@ variable "webapp_replicas" {
     default = 3
 }
 
-variable "use_nginx" {
-    type = bool
-    default = true
-}
-
-variable "use_traefik" {
-    type = bool
-    default = false
+variable "webapp_namespace" {
+    type = string
+    default = "default"
 }
