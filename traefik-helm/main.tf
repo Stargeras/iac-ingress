@@ -52,13 +52,13 @@ resource "kubernetes_manifest" "tls_store" {
   depends_on = [helm_release.traefik]
 }
 
-resource "kubernetes_manifest" "dashboard" {
+resource "kubernetes_manifest" "traefik-dashboard" {
   count = var.use_traefik ? 1 : 0
   manifest = {
     "apiVersion" = "traefik.containo.us/v1alpha1"
     "kind" = "IngressRoute"
     "metadata" = {
-      "name" = "dashboard"
+      "name" = "traefik-dashboard"
       "namespace" = "traefik"
     }
     "spec" = {
