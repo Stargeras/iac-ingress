@@ -49,6 +49,7 @@ resource "kubernetes_manifest" "tls_store" {
       }
     }
   }
+  depends_on = [helm_release.traefik]
 }
 
 resource "kubernetes_manifest" "dashboard" {
@@ -65,13 +66,19 @@ resource "kubernetes_manifest" "dashboard" {
         "websecure",
       ]
       "routes" = [{
-        "match" = "(PathPrefix(`dashboard`) || PathPrefix(`/api`))"
+        "match" = "((PathPrefix(`dashboard`) || PathPrefix(`/api`))"
         "kind" = "Rule"
         "services" = [{
           "name" = "api@internal"
           "kind" = "TraefikService"
         }]
       }]
+      "tls" = {
+        "store" = {
+          "name" = "default"
+        }
+      }
     }
   }
+  depends_on = [helm_release.traefik]
 }

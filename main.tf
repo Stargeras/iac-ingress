@@ -15,7 +15,6 @@ module "tls" {
     tls_altnames = "${var.tls_altnames}"
     tls_organization = "${var.tls_organization}"
     kubeconfig = "${var.kubeconfig}"
-    use_traefik = "${var.use_traefik}"
 }
 
 module "ingress-nginx" {
