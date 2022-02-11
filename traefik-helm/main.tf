@@ -66,7 +66,7 @@ resource "kubernetes_manifest" "dashboard" {
         "websecure",
       ]
       "routes" = [{
-        "match" = "((PathPrefix(`dashboard`) || PathPrefix(`/api`))"
+        "match" = "PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
         "kind" = "Rule"
         "services" = [{
           "name" = "api@internal"
@@ -80,5 +80,5 @@ resource "kubernetes_manifest" "dashboard" {
       }
     }
   }
-  depends_on = [helm_release.traefik]
+  depends_on = [kubernetes_manifest.tls_store]
 }
