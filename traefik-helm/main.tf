@@ -32,6 +32,11 @@ resource "helm_release" "traefik" {
     name = "deployment.kind"
     value = "Deployment"
   }
+
+  set {
+    name = "ingressRoute.dashboard.enabled"
+    value = "false"
+  }
 }
 
 resource "kubernetes_manifest" "tls_store" {
