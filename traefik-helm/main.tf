@@ -34,6 +34,23 @@ resource "helm_release" "traefik" {
   }
 }
 
+resource "kubernetes_manifest" "tls_store" {
+  count = var.use_traefik ? 1 : 0
+  manifest = {
+    "apiVersion" = "traefik.containo.us/v1alpha1"
+    "kind" = "TLSStore"
+    "metadata" = {
+      "name" = "default"
+      "namespace" = "kube-public"
+    }
+    "spec" = {
+      "defaultCertificate" = {
+        "secretName" = "ingress-tls"
+      }
+    }
+  }
+}
+
 resource "kubernetes_manifest" "dashboard" {
   count = var.use_traefik ? 1 : 0
   manifest = {
@@ -44,9 +61,9 @@ resource "kubernetes_manifest" "dashboard" {
       "namespace" = "traefik"
     }
     "spec" = {
-      "entryPoints" = [{
-        "websecure" = ""
-      }]
+      "entryPoints" = [
+        "websecure",
+      ]
       "routes" = [{
         "match" = "(PathPrefix(`dashboard`) || PathPrefix(`/api`))"
         "kind" = "Rule"
@@ -58,4 +75,3 @@ resource "kubernetes_manifest" "dashboard" {
     }
   }
 }
-
