@@ -4,9 +4,17 @@ provider "kubernetes" {
   ]
 }
 
+resource "kubernetes_namespace" "webapp" {
+  count = var.webapp_namespace != "default" ? 1 : 0
+  metadata {
+    name = "${var.webapp_namespace}"
+  }
+}
+
 resource "kubernetes_deployment" "webapp" {
   metadata {
     name = "webapp"
+    namespace = "${var.webapp_namespace}"
     labels = {
       app = "webapp"
     }
@@ -37,6 +45,7 @@ resource "kubernetes_deployment" "webapp" {
 resource "kubernetes_service" "webapp" {
   metadata {
     name = "webapp"
+    namespace = "${var.webapp_namespace}"
   }
   spec {
     selector = {
@@ -54,6 +63,7 @@ resource "kubernetes_ingress_v1" "webapp" {
   count = var.use_nginx ? 1 : 0
   metadata {
     name = "webapp"
+    namespace = "${var.webapp_namespace}"
   }
   spec {
     ingress_class_name = "nginx"
@@ -88,7 +98,7 @@ resource "kubernetes_manifest" "webapp" {
     "kind" = "IngressRoute"
     "metadata" = {
       "name" = "webapp"
-      "namespace" = "default"
+      "namespace" = "${var.webapp_namespace}"
     }
     "spec" = {
       "entryPoints" = [
