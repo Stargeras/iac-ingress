@@ -116,7 +116,7 @@ spec:
     match: Host(`${var.webapp_hostname}`) && PathPrefix(`/`)
     services:
     - name: webapp
-      port: "${var.webapp_port}"
+      port: ${var.webapp_port}
   tls:
     store:
       name: default
