@@ -10,6 +10,12 @@ provider "kubernetes" {
   ]
 }
 
+provider "kubectl" {
+  config_paths = [
+    "${var.kubeconfig}"
+  ]
+}
+
 resource "helm_release" "traefik" {
   count      = var.use_traefik ? 1 : 0
   name       = "traefik"
@@ -39,51 +45,41 @@ resource "helm_release" "traefik" {
   }
 }
 
-resource "kubernetes_manifest" "tls_store" {
+resource "kubectl_manifest" "tls_store" {
   count = var.use_traefik ? 1 : 0
-  manifest = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "TLSStore"
-    "metadata" = {
-      "name" = "default"
-      "namespace" = "kube-public"
-    }
-    "spec" = {
-      "defaultCertificate" = {
-        "secretName" = "ingress-tls"
-      }
-    }
-  }
+  yaml_body = <<YAML
+apiVersion: traefik.containo.us/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: kube-public
+spec:
+  defaultCertificate:
+    secretName: ingress-tls
+YAML
   depends_on = [helm_release.traefik]
 }
 
-resource "kubernetes_manifest" "traefik-dashboard" {
+resource "kubectl_manifest" "traefik-dashboard" {
   count = var.use_traefik ? 1 : 0
-  manifest = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "IngressRoute"
-    "metadata" = {
-      "name" = "traefik-dashboard"
-      "namespace" = "traefik"
-    }
-    "spec" = {
-      "entryPoints" = [
-        "websecure",
-      ]
-      "routes" = [{
-        "match" = "PathPrefix(`/dashboard`) || PathPrefix(`/api`)"
-        "kind" = "Rule"
-        "services" = [{
-          "name" = "api@internal"
-          "kind" = "TraefikService"
-        }]
-      }]
-      "tls" = {
-        "store" = {
-          "name" = "default"
-        }
-      }
-    }
-  }
-  depends_on = [kubernetes_manifest.tls_store]
+  yaml_body = <<YAML
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: PathPrefix(`/dashboard`) || PathPrefix(`/api`)
+    services:
+    - kind: TraefikService
+      name: api@internal
+  tls:
+    store:
+      name: default
+YAML
+  depends_on = [kubectl_manifest.tls_store]
 }
