@@ -4,6 +4,12 @@ provider "kubernetes" {
   ]
 }
 
+provider "kubectl" {
+  config_paths = [
+    "${var.kubeconfig}"
+  ]
+}
+
 resource "kubernetes_namespace" "webapp" {
   count = var.webapp_namespace != "default" ? 1 : 0
   metadata {
@@ -94,33 +100,26 @@ resource "kubernetes_ingress_v1" "webapp" {
   depends_on = [kubernetes_namespace.webapp]
 }
 
-resource "kubernetes_manifest" "webapp" {
+resource "kubectl_manifest" "webapp-ingressroute" {
   count = var.use_traefik ? 1 : 0
-  manifest = {
-    "apiVersion" = "traefik.containo.us/v1alpha1"
-    "kind" = "IngressRoute"
-    "metadata" = {
-      "name" = "webapp"
-      "namespace" = "${var.webapp_namespace}"
-    }
-    "spec" = {
-      "entryPoints" = [
-        "websecure",
-      ]
-      "routes" = [{
-        "match" = "Host(`${var.webapp_hostname}`) && PathPrefix(`/`)"
-        "kind" = "Rule"
-        "services" = [{
-          "name" = "webapp"
-          "port" = "${var.webapp_port}"
-        }]
-      }]
-      "tls" = {
-        "store" = {
-          "name" = "default"
-        }
-      }
-    }
-  }
+  yaml_body = <<YAML
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: webapp
+  namespace: "${var.webapp_namespace}"
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`${var.webapp_hostname}`) && PathPrefix(`/`)
+    services:
+    - name: webapp
+      port: "${var.webapp_port}"
+  tls:
+    store:
+      name: default
+YAML
   depends_on = [kubernetes_namespace.webapp]
 }
