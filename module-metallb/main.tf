@@ -1,3 +1,15 @@
+provider "helm" {
+  kubernetes {
+      config_path = "${var.kubeconfig}"
+  }
+}
+
+provider "kubernetes" {
+  config_paths = [
+    "${var.kubeconfig}"
+  ]
+}
+
 resource "kubernetes_namespace" "metallb" {
   metadata {
     name = "metallb"
@@ -9,9 +21,14 @@ resource "kubernetes_config_map" "metallb" {
     name = "config"
     namespace = "metallb"
   }
-
   data = {
-    config = "${file("${path.module}/config.yaml")}"
+    config = <<-EOT
+    address-pools:
+    - name: default
+      protocol: layer2
+      addresses:
+      - ${var.metallb_addresses}
+    EOT
   }
   depends_on = [kubernetes_namespace.metallb]
 }
@@ -25,7 +42,7 @@ resource "helm_release" "metallb" {
 
   set {
       name = "existingConfigMap"
-      value = "config"
+      value = "${kubernetes_config_map.metallb.metadata[0].name}"
   }
   depends_on = [kubernetes_config_map.metallb]
 }
