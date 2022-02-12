@@ -1,6 +1,6 @@
-variable "metallb_ip" {
+variable "metallb_addresses" {
     type = string
-    default = "23.82.1.170-23.82.1.175"
+    default = "23.82.1.170/32"
 }
 
 variable "use_nginx" {

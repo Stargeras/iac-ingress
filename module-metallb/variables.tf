@@ -1,2 +1,2 @@
 variable "kubeconfig" {}
-variable "metallb_ip" {}
+variable "metallb_addresses" {}

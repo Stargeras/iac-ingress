@@ -1,7 +1,7 @@
 module "metallb" {
     source = "./module-metallb"
     kubeconfig = "${var.kubeconfig}"
-    metallb_ip = "${var.metallb_ip}"
+    metallb_addresses = "${var.metallb_addresses}"
 }
 
 module "traefik" {
