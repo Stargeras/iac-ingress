@@ -1,6 +1,6 @@
 variable "metallb_addresses" {
     type = string
-    default = "23.82.1.170/32"
+    default = "23.82.1.70/32"
 }
 
 variable "use_nginx" {
@@ -15,13 +15,13 @@ variable "use_traefik" {
 
 variable "tls_cname" {
     type = string
-    default = "svc.cluster.local"
+    default = "local.domain"
 }
 
 variable "tls_altnames" {
     type = list
     default = [
-        "*.svc.cluster.local"
+        "*.local.domain"
     ]
 }
 
@@ -37,7 +37,7 @@ variable "kubeconfig" {
 
 variable "webapp_hostname" {
     type = string
-    default = "webapp.svc.cluster.local"
+    default = "webapp.local.domain"
 }
 
 variable "webapp_image" {
