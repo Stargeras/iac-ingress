@@ -43,6 +43,11 @@ resource "helm_release" "traefik" {
     name = "ingressRoute.dashboard.enabled"
     value = "false"
   }
+
+  set {
+    name = "ports.web.redirectTo"
+    value = "websecure"
+  }
 }
 
 resource "kubectl_manifest" "tls_store" {
