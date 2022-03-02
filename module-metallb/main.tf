@@ -1,6 +1,6 @@
 provider "helm" {
   kubernetes {
-      config_path = "${var.kubeconfig}"
+    config_path = var.kubeconfig
   }
 }
 
@@ -18,7 +18,7 @@ resource "kubernetes_namespace" "metallb" {
 
 resource "kubernetes_config_map" "metallb" {
   metadata {
-    name = "config"
+    name      = "config"
     namespace = "metallb"
   }
   data = {
@@ -34,15 +34,15 @@ resource "kubernetes_config_map" "metallb" {
 }
 
 resource "helm_release" "metallb" {
-  name       = "metallb"
-  namespace  = "metallb"
+  name             = "metallb"
+  namespace        = "metallb"
   create_namespace = "true"
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "metallb"
+  repository       = "https://charts.bitnami.com/bitnami"
+  chart            = "metallb"
 
   set {
-      name = "existingConfigMap"
-      value = "${kubernetes_config_map.metallb.metadata[0].name}"
+    name  = "existingConfigMap"
+    value = kubernetes_config_map.metallb.metadata[0].name
   }
   depends_on = [kubernetes_config_map.metallb]
 }

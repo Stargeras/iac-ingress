@@ -1,6 +1,6 @@
 provider "helm" {
   kubernetes {
-      config_path = "${var.kubeconfig}"
+    config_path = var.kubeconfig
   }
 }
 
@@ -17,12 +17,12 @@ provider "kubectl" {
 }
 
 resource "helm_release" "traefik" {
-  count      = var.use_traefik ? 1 : 0
-  name       = "traefik"
-  namespace  = "traefik"
+  count            = var.use_traefik ? 1 : 0
+  name             = "traefik"
+  namespace        = "traefik"
   create_namespace = "true"
-  repository = "https://helm.traefik.io/traefik"
-  chart      = "traefik"
+  repository       = "https://helm.traefik.io/traefik"
+  chart            = "traefik"
 
   set {
     name  = "service.type"
@@ -30,29 +30,29 @@ resource "helm_release" "traefik" {
   }
 
   set {
-    name = "ports.websecure.tls.enabled"
+    name  = "ports.websecure.tls.enabled"
     value = "true"
   }
 
   set {
-    name = "deployment.kind"
+    name  = "deployment.kind"
     value = "Deployment"
   }
 
   set {
-    name = "ingressRoute.dashboard.enabled"
+    name  = "ingressRoute.dashboard.enabled"
     value = "false"
   }
 
   set {
-    name = "ports.web.redirectTo"
+    name  = "ports.web.redirectTo"
     value = "websecure"
   }
 }
 
 resource "kubectl_manifest" "tls_store" {
-  count = var.use_traefik ? 1 : 0
-  yaml_body = <<YAML
+  count      = var.use_traefik ? 1 : 0
+  yaml_body  = <<YAML
 apiVersion: traefik.containo.us/v1alpha1
 kind: TLSStore
 metadata:
@@ -66,8 +66,8 @@ YAML
 }
 
 resource "kubectl_manifest" "traefik-dashboard" {
-  count = var.use_traefik ? 1 : 0
-  yaml_body = <<YAML
+  count      = var.use_traefik ? 1 : 0
+  yaml_body  = <<YAML
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:

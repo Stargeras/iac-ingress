@@ -13,20 +13,20 @@ provider "kubectl" {
 resource "kubernetes_namespace" "webapp" {
   count = var.webapp_namespace != "default" ? 1 : 0
   metadata {
-    name = "${var.webapp_namespace}"
+    name = var.webapp_namespace
   }
 }
 
 resource "kubernetes_deployment" "webapp" {
   metadata {
-    name = "webapp"
-    namespace = "${var.webapp_namespace}"
+    name      = "webapp"
+    namespace = var.webapp_namespace
     labels = {
       app = "webapp"
     }
   }
   spec {
-    replicas = "${var.webapp_replicas}"
+    replicas = var.webapp_replicas
     selector {
       match_labels = {
         app = "webapp"
@@ -40,7 +40,7 @@ resource "kubernetes_deployment" "webapp" {
       }
       spec {
         container {
-          image = "${var.webapp_image}"
+          image = var.webapp_image
           name  = "webapp"
         }
       }
@@ -51,16 +51,16 @@ resource "kubernetes_deployment" "webapp" {
 
 resource "kubernetes_service" "webapp" {
   metadata {
-    name = "webapp"
-    namespace = "${var.webapp_namespace}"
+    name      = "webapp"
+    namespace = var.webapp_namespace
   }
   spec {
     selector = {
       app = "webapp"
     }
     port {
-      port        = "${var.webapp_port}"
-      target_port = "${var.webapp_port}"
+      port        = var.webapp_port
+      target_port = var.webapp_port
     }
     type = "ClusterIP"
   }
@@ -70,20 +70,20 @@ resource "kubernetes_service" "webapp" {
 resource "kubernetes_ingress_v1" "webapp" {
   count = var.use_nginx ? 1 : 0
   metadata {
-    name = "webapp"
-    namespace = "${var.webapp_namespace}"
+    name      = "webapp"
+    namespace = var.webapp_namespace
   }
   spec {
     ingress_class_name = "nginx"
     rule {
-      host = "${var.webapp_hostname}"
+      host = var.webapp_hostname
       http {
         path {
           backend {
             service {
               name = "webapp"
               port {
-                number = "${var.webapp_port}"
+                number = var.webapp_port
               }
             }
           }
@@ -101,8 +101,8 @@ resource "kubernetes_ingress_v1" "webapp" {
 }
 
 resource "kubectl_manifest" "webapp-ingressroute" {
-  count = var.use_traefik ? 1 : 0
-  yaml_body = <<YAML
+  count      = var.use_traefik ? 1 : 0
+  yaml_body  = <<YAML
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
