@@ -24,7 +24,7 @@ EOF
   # UPDATE SYSTEM AND INSTALL PRE-REQS
   apt update
   apt upgrade -y
-  apt install gnupg curl -y
+  apt install gnupg curl unzip -y
 
   # INSTALL PACKAGES
   curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
