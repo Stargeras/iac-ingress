@@ -49,7 +49,7 @@ EOF
   kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
 
   # LOCAL-PATH PROVISIONER
-  kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/master/deploy/local-path-storage.yaml
+  kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.21/deploy/local-path-storage.yaml
 
   # BASH COMPLETION
   if [[ ! $(cat ${HOME}/.bashrc | grep "kubectl completion bash") ]]; then
