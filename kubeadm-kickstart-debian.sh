@@ -58,7 +58,7 @@ EOF
 fi
 
 if ${installterraform}; then
-  terraformversion="1.1.4"
+  terraformversion=$(curl https://releases.hashicorp.com/terraform/ | grep href | sort -r | grep terraform_ | head -1 | awk -F _ '{print $NF}' | awk -F '<' '{print $1}')
   url="https://releases.hashicorp.com/terraform/${terraformversion}/terraform_${terraformversion}_linux_amd64.zip"
   file=$(echo ${url} | awk -F / '{print $NF}')
   wget ${url}
