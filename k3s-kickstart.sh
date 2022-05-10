@@ -3,15 +3,17 @@
 installk3s="true"
 installterraform="true"
 installhelm="true"
+osname=$(cat /etc/os-release | grep '^ID=' | awk -F = '{print $NF}')
 
 if ${installk3s}; then
   # DETERMINE K3S ANNOTATIONS FROM OS 
-  if [[ $(cat /etc/os-release | grep ^ID=) == "ID=debian" ]]; then
+  if [[ ${osname} == "debian" ]]; then
     k3sannotations="--snapshotter=native --disable=traefik"
-  else
+  elif [[ ${osname} == "arch" ]]; then
     k3sannotations="--snapshotter=fuse-overlayfs --disable=traefik"
+  else
+    k3sannotations="--disable=traefik"
   fi
-
   # INSTALL K3S
   curl -sfL https://get.k3s.io > k3s.sh
   bash k3s.sh ${k3sannotations}
@@ -28,24 +30,36 @@ if ${installk3s}; then
   fi
 fi
 
+# INSTALL TERRAFORM
 if ${installterraform}; then
-  terraformversion="1.1.4"
-  url="https://releases.hashicorp.com/terraform/${terraformversion}/terraform_${terraformversion}_linux_amd64.zip"
-  file=$(echo ${url} | awk -F / '{print $NF}')
-  wget ${url}
-  echo ${file} | grep .zip >/dev/null 2>&1
-  if [[ $? -eq 0 ]]; then
-    unzip ${file}
-    newfile=$(echo ${file} | awk -F _ '{print $1}')
-    chmod +x ${newfile}
-    mv ${newfile} /usr/local/bin/
-    rm -f ${file}
-   else
-    chmod +x ${file}
-    mv ${file} /usr/local/bin/
+  if [[ ${osname} == "debian" ]]; then
+    terraformversion=$(curl https://releases.hashicorp.com/terraform/ | grep href | sort -r | grep terraform_ | head -1 | awk -F _ '{print $NF}' | awk -F '<' '{print $1}')
+    url="https://releases.hashicorp.com/terraform/${terraformversion}/terraform_${terraformversion}_linux_amd64.zip"
+    file=$(echo ${url} | awk -F / '{print $NF}')
+    wget ${url}
+    echo ${file} | grep .zip >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+      unzip ${file}
+      newfile=$(echo ${file} | awk -F _ '{print $1}')
+      chmod +x ${newfile}
+      mv ${newfile} /usr/local/bin/
+      rm -f ${file}
+     else
+      chmod +x ${file}
+      mv ${file} /usr/local/bin/
+    fi
+  elif [[ ${osname} == "arch" ]]; then
+    pacman -Sy
+    pacman -S terraform --noconfirm
   fi
 fi
 
+# INSTALL HELM
 if ${installhelm}; then
-  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  if [[ ${osname} == "debian" ]]; then
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+  elif [[ ${osname} == "arch" ]]; then
+    pacman -Sy
+    pacman -S helm --noconfirm
+  fi
 fi
