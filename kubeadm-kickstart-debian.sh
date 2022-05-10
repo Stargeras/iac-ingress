@@ -8,8 +8,8 @@ osname=$(cat /etc/os-release | grep '^ID=' | awk -F = '{print $NF}')
 
 
 # ENSURE SUPPORTED OS
-if [[ ${osname} != "debian" || ${osname} != "arch" ]]; then
-  "Install only supported on Debian or Arch Linux"
+if [[ ! ${osname} == "debian" ]] || [[ ! ${osname} == "arch" ]]; then
+  echo "Install only supported on Debian or Arch Linux"
   exit 1
 fi
 
@@ -45,6 +45,8 @@ fi
 
 if [[ ${osname} == "arch" ]]; then
   pacman -Sy
+  pacman -S docker
+  systemctl enable --now docker
   pacman -S kubectl kubeadm kubelet --noconfirm
 fi
 
