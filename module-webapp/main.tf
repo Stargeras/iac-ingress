@@ -1,15 +1,3 @@
-provider "kubernetes" {
-  config_paths = [
-    "${var.kubeconfig}"
-  ]
-}
-
-provider "kubectl" {
-  config_paths = [
-    "${var.kubeconfig}"
-  ]
-}
-
 resource "kubernetes_namespace" "webapp" {
   count = var.webapp_namespace != "default" ? 1 : 0
   metadata {

@@ -1,21 +1,3 @@
-provider "helm" {
-  kubernetes {
-    config_path = var.kubeconfig
-  }
-}
-
-provider "kubernetes" {
-  config_paths = [
-    "${var.kubeconfig}"
-  ]
-}
-
-provider "kubectl" {
-  config_paths = [
-    "${var.kubeconfig}"
-  ]
-}
-
 resource "helm_release" "traefik" {
   count            = var.use_traefik ? 1 : 0
   name             = "traefik"
