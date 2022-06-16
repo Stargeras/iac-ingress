@@ -39,7 +39,7 @@ apiVersion: traefik.containo.us/v1alpha1
 kind: TLSStore
 metadata:
   name: default
-  namespace: kube-public
+  namespace: default
 spec:
   defaultCertificate:
     secretName: ingress-tls

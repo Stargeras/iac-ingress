@@ -11,11 +11,15 @@ module "traefik" {
 }
 
 module "tls" {
-  source           = "./module-tls"
-  tls_cname        = var.tls_cname
-  tls_altnames     = var.tls_altnames
-  tls_organization = var.tls_organization
-  kubeconfig       = var.kubeconfig
+  source                    = "./module-tls"
+  ca_cname                  = var.ca_cname
+  ca_organization           = var.ca_organization
+  ca_validity_period_hours  = var.ca_validity_period_hours
+  tls_cname                 = var.tls_cname
+  tls_altnames              = var.tls_altnames
+  tls_organization          = var.tls_organization
+  tls_validity_period_hours = var.tls_validity_period_hours
+  kubeconfig                = var.kubeconfig
 }
 
 module "nginx-ingress" {

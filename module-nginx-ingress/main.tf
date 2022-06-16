@@ -13,12 +13,12 @@ resource "helm_release" "ingress" {
 
   set {
     name  = "controller.defaultTLS.secret"
-    value = "kube-public/ingress-tls"
+    value = "default/ingress-tls"
   }
 
   set {
     name  = "controller.wildcardTLS.secret"
-    value = "kube-public/ingress-tls"
+    value = "default/ingress-tls"
   }
 
   set {
